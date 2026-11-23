@@ -113,10 +113,10 @@ function cornerLabel(corner) {
 }
 
 function displayLabel(display) {
-  if (display === 'web') return '仅浏览器';
+  if (display === 'web') return '仅网页';
   if (display === 'desktop') return '仅桌面';
-  if (display === 'both') return '两者都显示';
-  return '都不显示';
+  if (display === 'both') return '两者';
+  return '都不';
 }
 
 function clampNumber(value, min, max, fallback) {

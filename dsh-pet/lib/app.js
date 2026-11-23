@@ -62133,7 +62133,7 @@ function petCard() {
         else pet.sizePercent = Number(value);
       }, { hint: '留空表示按 px 显示。' }),
     ]),
-    selectField('pet-display', '显示位置', pet.display, DISPLAYS.map((value) => ({ value: value, label: displayLabel(value) })), (value) => { pet.display = value; }, 'web=仅浏览器 / desktop=仅桌面 / both=两者都显示 / none=都不显示'),
+    selectField('pet-display', '显示位置', pet.display, DISPLAYS.map((value) => ({ value: value, label: displayLabel(value) })), (value) => { pet.display = value; }, 'web=仅网页 / desktop=仅桌面 / both=两者 / none=都不（选「都不」后宠物会从界面消失，需回本设置页恢复）'),
     make('div', { class: 'grid2' }, [
       selectField('pet-corner', '停靠角落', pet.position.corner, CORNERS.map((value) => ({ value: value, label: cornerLabel(value) })), (value) => { pet.position.corner = value; }),
       numberField('pet-margin-x', '水平边距（px）', pet.position.marginX, (value) => { pet.position.marginX = value; }, { step: 1 }),
@@ -62501,10 +62501,10 @@ function cornerLabel(corner) {
 }
 
 function displayLabel(display) {
-  if (display === 'web') return '仅浏览器';
+  if (display === 'web') return '仅网页';
   if (display === 'desktop') return '仅桌面';
-  if (display === 'both') return '两者都显示';
-  return '都不显示';
+  if (display === 'both') return '两者';
+  return '都不';
 }
 
 function clampNumber(value, min, max, fallback) {

@@ -6,7 +6,7 @@
  * @module dsh-pet/src/client/pet/card/view
  */
 import { PET_HIT_STYLE } from '../motion/geometry.ts';
-import { TOOLTIP_CLASS } from '../../../shared/tooltip.ts';
+import { HOTKEY_TIP, TOOLTIP_CLASS } from '../../../shared/tooltip.ts';
 import type { CSSProperties, ReactNode } from 'react';
 import type * as ReactNS from 'react';
 import type { jsx } from 'react/jsx-runtime';
@@ -125,7 +125,10 @@ export function makeCardView(rt: { h: typeof jsx }) {
           ref: props.tipRef,
           className: TOOLTIP_CLASS + (props.tipOn ? ' is-on' : ''),
           'aria-hidden': 'true',
-          children: props.name,
+          children: [
+            h('span', { key: 'n', className: 'pet-tooltip__name', children: props.name }),
+            h('span', { key: 'k', className: 'pet-tooltip__keys', children: HOTKEY_TIP }),
+          ],
         }),
       ],
     });

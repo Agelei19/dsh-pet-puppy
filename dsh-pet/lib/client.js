@@ -523,6 +523,7 @@ function mountContextMenu(opts) {
 //#endregion
 //#region src/shared/tooltip.ts
 const TOOLTIP_CLASS = "pet-tooltip";
+const HOTKEY_TIP = "L 对话 · M 按住说 · S 截图 · D 待办 · Z 睡醒";
 const TOOLTIP_GAP_RATIO = .022;
 function tooltipPlacement(cursor, tip, bounds, gap) {
 	const clamp$1 = (v, lo, hi) => hi < lo ? lo : Math.min(Math.max(v, lo), hi);
@@ -549,10 +550,12 @@ const TOOLTIP_CSS = [
 	"border:1px solid rgba(0,0,0,.12);",
 	"font-family:var(--dsh-pet-font-family,\"ShangshouSoftCandy\",\"Yuanti SC\",\"YouYuan\",\"幼圆\",\"Comic Sans MS\",\"PingFang SC\",\"Microsoft YaHei\",sans-serif);",
 	"font-size:var(--dsh-pet-font-tip,calc(var(--dsh-pet-size,var(--pet-size,462px))*0.026));line-height:1.4;",
-	"white-space:nowrap;overflow:hidden;text-overflow:ellipsis;",
+	"white-space:normal;",
 	"box-shadow:0 calc(var(--dsh-pet-size,var(--pet-size,462px))*0.004) calc(var(--dsh-pet-size,var(--pet-size,462px))*0.013) rgba(0,0,0,.18);",
 	"opacity:0;transition:opacity .12s ease;pointer-events:none;z-index:2}",
-	".pet-tooltip.is-on{opacity:1}"
+	".pet-tooltip.is-on{opacity:1}",
+	".pet-tooltip__name,.pet-tooltip__keys{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+	".pet-tooltip__keys{opacity:.62;font-size:.88em;margin-top:2px}"
 ].join("");
 
 //#endregion
@@ -1105,7 +1108,10 @@ function makeCardView(rt) {
 					ref: props.tipRef,
 					className: TOOLTIP_CLASS + (props.tipOn ? " is-on" : ""),
 					"aria-hidden": "true",
-					children: props.name
+					children: [
+						h("span", { key: "n", className: "pet-tooltip__name", children: props.name }),
+						h("span", { key: "k", className: "pet-tooltip__keys", children: HOTKEY_TIP })
+					]
 				})
 			]
 		});
@@ -9084,7 +9090,7 @@ const zh$1 = {
 	fixedEnabled: "宠物固定",
 	fixedEnabledHint: "启用后随机动画不再让宠物自己转向或走开，只播原地待机与随机小动作；右键菜单点播、接口触发、余额/碎碎念/工作状态动画不受影响。",
 	displayLabel: "显示位置",
-	displayHint: "web=仅浏览器 / desktop=仅桌面 / both=两者都显示 / none=都不显示",
+	displayHint: "web=仅网页 / desktop=仅桌面 / both=两者 / none=都不（选「都不」后宠物会从界面消失，需回本设置页恢复）",
 	"display.web": "仅浏览器",
 	"display.desktop": "仅桌面",
 	"display.both": "两者都显示",
@@ -12816,6 +12822,7 @@ function createCardEntry(rt) {
 			captureInto();
 		};
 		const hoverRef = useRef(false);
+		const menuOpenRef = useRef(false);
 		const openChatRef = useRef(openChat);
 		openChatRef.current = openChat;
 		const stageGetterRef = useRef(stage);
@@ -12861,14 +12868,23 @@ function createCardEntry(rt) {
 			screenshot: () => screenshotRef.current()
 		}), [cfgRef]);
 		useEffect(() => {
+			const isHotkeyArmed = () => {
+				if (hoverRef.current || menuOpenRef.current || chatRef.current !== null) {
+					const active = document.activeElement;
+					const tag = active?.tagName;
+					if (tag === "INPUT" || tag === "TEXTAREA" || active?.isContentEditable) return false;
+					return true;
+				}
+				return false;
+			};
 			const offChat = bindOpenChat({
 				stage: stageGetterRef.current(),
-				isHovered: () => hoverRef.current,
+				isHovered: isHotkeyArmed,
 				openChat: (image) => image === void 0 ? openChatRef.current() : openChatWithImageRef.current(image)
 			});
 			const hearHold = createHearHold({
 				isArmed: () => {
-					if (hoverRef.current) return true;
+					if (isHotkeyArmed()) return true;
 					const chat = chatRef.current;
 					const active = document.activeElement;
 					return !!chat && !!active && chat.el.contains(active);
@@ -12881,7 +12897,7 @@ function createCardEntry(rt) {
 					e.preventDefault();
 					return;
 				}
-				if (!hoverRef.current) return;
+				if (!isHotkeyArmed()) return;
 				const display = displayOfHotkey(e);
 				if (display !== void 0) {
 					e.preventDefault();
@@ -12982,9 +12998,11 @@ function createCardEntry(rt) {
 				y: e.clientY,
 				onAction: runMenuAction,
 				onClose: () => {
+					menuOpenRef.current = false;
 					if (menuRef.current) menuRef.current = null;
 				}
 			});
+			menuOpenRef.current = true;
 		};
 		return {
 			handleContextMenu,

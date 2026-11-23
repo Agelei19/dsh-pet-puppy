@@ -77,7 +77,7 @@ export const zh = {
   fixedEnabledHint:
     '启用后随机动画不再让宠物自己转向或走开，只播原地待机与随机小动作；右键菜单点播、接口触发、余额/碎碎念/工作状态动画不受影响。',
   displayLabel: '显示位置',
-  displayHint: 'web=仅浏览器 / desktop=仅桌面 / both=两者都显示 / none=都不显示',
+  displayHint: 'web=仅网页 / desktop=仅桌面 / both=两者 / none=都不（选「都不」后宠物会从界面消失，需回本设置页恢复）',
   'display.web': '仅浏览器',
   'display.desktop': '仅桌面',
   'display.both': '两者都显示',

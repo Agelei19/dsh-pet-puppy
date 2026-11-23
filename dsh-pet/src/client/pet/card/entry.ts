@@ -106,6 +106,9 @@ export function createCardEntry(rt: CardEntryRuntime) {
     // 右键菜单与对话弹窗当前的句柄，卸载或重开前清理。对话弹窗还要按住说话遥控开录/收尾。
     const menuRef = useRef<{ close: () => void } | null>(null);
     const chatRef = useRef<ChatDialogMount | null>(null);
+    // 菜单是否打开：光标移进菜单会触发命中区 onPointerLeave，若只认 hover 会让菜单里读到的键帽失效。
+    // 这里单独记，让悬停键在本宠物的菜单/对话浮层打开期间仍然生效。
+    const menuOpenRef = useRef(false);
 
     /** 把提示框摆到光标右下，放不下时翻边并夹回视口。
      *  直接写 DOM style：每次鼠标移动都走 React 状态会让整个 PetCard 重渲染。
@@ -280,16 +283,27 @@ export function createCardEntry(rt: CardEntryRuntime) {
     // 全部只在鼠标停在这只宠物上时生效；按住说话另有一条——焦点在宠物自己的弹窗里也算，
     // 但在弹窗输入框里打字时不算（否则拼音里的 m 会被当成开录，见 createHearHold）。
     useEffect(() => {
+      // 悬停键生效条件：停在本宠物上，或它的菜单/对话浮层正开着（光标进菜单会离开命中区）。
+      // 注意 exclude 输入框：在对话/待办里打字时不抢键，否则拼音里的 m/s/z 会误触。
+      const isHotkeyArmed = (): boolean => {
+        if (hoverRef.current || menuOpenRef.current || chatRef.current !== null) {
+          const active = document.activeElement;
+          const tag = active?.tagName;
+          if (tag === 'INPUT' || tag === 'TEXTAREA' || (active as HTMLElement | null)?.isContentEditable) return false;
+          return true;
+        }
+        return false;
+      };
       // 挂载时注册一次监听，但始终调用最新的闭包（它们读 ref，不能捕获旧值）。
       const offChat = bindOpenChat({
         stage: stageGetterRef.current(),
-        isHovered: () => hoverRef.current,
+        isHovered: isHotkeyArmed,
         openChat: (image) => (image === undefined ? openChatRef.current() : openChatWithImageRef.current(image)),
       });
       // 按住 M：按下开录、松手收尾。状态机自己管自动重复与松开，这里只管把事件送进去。
       const hearHold = createHearHold({
         isArmed: () => {
-          if (hoverRef.current) return true;
+          if (isHotkeyArmed()) return true;
           const chat = chatRef.current;
           const active = document.activeElement;
           return !!chat && !!active && chat.el.contains(active);
@@ -302,7 +316,7 @@ export function createCardEntry(rt: CardEntryRuntime) {
           e.preventDefault();
           return;
         }
-        if (!hoverRef.current) return;
+        if (!isHotkeyArmed()) return;
         const display = displayOfHotkey(e);
         if (display !== undefined) {
           e.preventDefault();
@@ -390,9 +404,11 @@ export function createCardEntry(rt: CardEntryRuntime) {
         onAction: runMenuAction,
         // 菜单被点外或 Esc 关闭时置空句柄，避免残留引用。
         onClose: () => {
+          menuOpenRef.current = false;
           if (menuRef.current) menuRef.current = null;
         },
       });
+      menuOpenRef.current = true;
     };
 
     return {

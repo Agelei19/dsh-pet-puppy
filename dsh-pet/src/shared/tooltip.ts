@@ -9,6 +9,12 @@
 /** 提示框 class（两端共用）。 */
 export const TOOLTIP_CLASS = 'pet-tooltip';
 
+/** 悬停提示第二行：最常用的悬停快捷键，解决快捷键无处可寻的问题。
+ *  与 shared/chat/hotkey.ts、shared/sleep-hotkey.ts、shared/todo/hotkey.ts、
+ *  shared/display-hotkey.ts 的按键保持同一份事实；改键时这里也要同步。
+ *  只放高频键，避免提示过长；完整清单在设置页「快捷键」卡片。 */
+export const HOTKEY_TIP = 'L 对话 · M 按住说 · S 截图 · D 待办 · Z 睡醒';
+
 /** 光标与提示框之间的间隙（占宠物宽度比例）：462px 的宠物下约 10px，与原生提示的偏移观感接近。 */
 export const TOOLTIP_GAP_RATIO = 0.022;
 
@@ -59,11 +65,14 @@ export const TOOLTIP_CSS = [
   // 字号对齐 Windows 原生提示（9pt ≈ 12px）：462px 的宠物下 0.026 → 约 12px。
   // --dsh-pet-font-tip 由两端按该宠物尺寸算好注入（shared/fonts.ts 的 resolveFontPx），未注入时回退原表达式。
   'font-size:var(--dsh-pet-font-tip,calc(var(--dsh-pet-size,var(--pet-size,462px))*0.026));line-height:1.4;',
-  // nowrap + 截断：宽度锁成一行才好和光标一起摆（换行会让宽度随位置跳变）
-  'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;',
+  // 两行结构：名字一行、快捷键一行；每行单独截断，整体宽度由最长一行决定（仍可稳定摆位）
+  'white-space:normal;',
   // 不设 backdrop-filter：白底没必要，原生提示也没有毛玻璃
   'box-shadow:0 calc(var(--dsh-pet-size,var(--pet-size,462px))*0.004) calc(var(--dsh-pet-size,var(--pet-size,462px))*0.013) rgba(0,0,0,.18);',
   // 层级低于气泡：两者不抢同一块地方（提示跟光标、气泡在头顶），保留层序只是兜底
   'opacity:0;transition:opacity .12s ease;pointer-events:none;z-index:2}',
   '.pet-tooltip.is-on{opacity:1}',
+  // 每行独立单行截断：快捷键行淡化且略小，和名字主次分明
+  '.pet-tooltip__name,.pet-tooltip__keys{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+  '.pet-tooltip__keys{opacity:.62;font-size:.88em;margin-top:2px}',
 ].join('');
