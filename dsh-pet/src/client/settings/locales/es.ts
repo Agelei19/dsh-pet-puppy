@@ -42,6 +42,8 @@ export const es: Record<Key, string> = {
   shortcutRowPaste: 'Pegar imagen',
   shortcutRowTodo: 'Tareas',
   shortcutRowSleep: 'Dormir / despertar',
+  shortcutRowBath: 'Baño',
+  shortcutRowKiss: 'Besito',
   shortcutRowDisplay: 'Posición de visualización',
   shortcutRowSidebar: 'Abrir el chat lateral',
   shortcutGroupPet: 'Atajos de la mascota',

@@ -11,9 +11,9 @@ export const TOOLTIP_CLASS = 'pet-tooltip';
 
 /** 悬停提示第二行：最常用的悬停快捷键，解决快捷键无处可寻的问题。
  *  与 shared/chat/hotkey.ts、shared/sleep-hotkey.ts、shared/todo/hotkey.ts、
- *  shared/display-hotkey.ts 的按键保持同一份事实；改键时这里也要同步。
+ *  shared/display-hotkey.ts、shared/bath-hotkey.ts 的按键保持同一份事实；改键时这里也要同步。
  *  只放高频键，避免提示过长；完整清单在设置页「快捷键」卡片。 */
-export const HOTKEY_TIP = 'L 对话 · M 按住说 · S 截图 · D 待办 · Z 睡醒';
+export const HOTKEY_TIP = 'L 对话 · M 按住说 · S 截图 · D 待办 · Z 睡醒 · B 洗澡';
 
 /** 光标与提示框之间的间隙（占宠物宽度比例）：462px 的宠物下约 10px，与原生提示的偏移观感接近。 */
 export const TOOLTIP_GAP_RATIO = 0.022;

@@ -40,6 +40,8 @@ export const zh = {
   shortcutRowPaste: '粘贴图片',
   shortcutRowTodo: '待办事项',
   shortcutRowSleep: '睡觉 / 起来',
+  shortcutRowBath: '进浴缸洗澡',
+  shortcutRowKiss: '伸头亲一下',
   shortcutRowDisplay: '显示位置',
   shortcutRowSidebar: '打开侧栏对话',
   shortcutGroupPet: '桌宠快捷键',

@@ -40,6 +40,8 @@ export const pt: Record<Key, string> = {
   shortcutRowPaste: 'Colar imagem',
   shortcutRowTodo: 'Tarefas',
   shortcutRowSleep: 'Dormir / acordar',
+  shortcutRowBath: 'Banho',
+  shortcutRowKiss: 'Beijinho',
   shortcutRowDisplay: 'Posição de exibição',
   shortcutRowSidebar: 'Abrir chat lateral',
   shortcutGroupPet: 'Atalhos do pet',

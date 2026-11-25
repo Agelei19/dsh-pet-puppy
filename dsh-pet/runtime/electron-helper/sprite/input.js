@@ -540,6 +540,17 @@ Object.assign(PetSprite.prototype, {
     if (S.isSleepHotkey(e) && Array.isArray(this.animations.sleep) && this.animations.sleep.length > 0) {
       e.preventDefault();
       this.postSleepAction(this.sleeping ? 'wake' : 'sleep');
+      return;
+    }
+    // 洗澡 / 亲一下：单向点播，播完自动回待机（与右键「动作 → 洗澡」同一条路径）
+    if (S.isBathHotkey(e)) {
+      e.preventDefault();
+      this.playOnce(S.BATH_ANIMATION);
+      return;
+    }
+    if (S.isKissHotkey(e)) {
+      e.preventDefault();
+      this.playOnce(S.KISS_ANIMATION);
     }
   },
 

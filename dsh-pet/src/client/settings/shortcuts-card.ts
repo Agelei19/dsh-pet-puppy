@@ -10,6 +10,7 @@
  */
 import type { FunctionComponent } from 'react';
 import { HEAR_HOTKEY_HINT } from '../../shared/chat/hear-hold.ts';
+import { BATH_HOTKEY_HINT, KISS_HOTKEY_HINT } from '../../shared/bath-hotkey.ts';
 import { CAPTURE_HOTKEY_HINT, CHAT_HOTKEY_HINT } from '../../shared/chat/hotkey.ts';
 import { DISPLAY_HOTKEY_HINTS } from '../../shared/display-hotkey.ts';
 import { SLEEP_HOTKEY_HINT } from '../../shared/sleep-hotkey.ts';
@@ -92,6 +93,8 @@ export function makeShortcutsCard(rt: SettingsRuntime, ctx: ShortcutHost): Funct
             row('shortcutRowPaste', PASTE_KEYCAP),
             row('shortcutRowTodo', TODO_HOTKEY_HINT),
             row('shortcutRowSleep', SLEEP_HOTKEY_HINT),
+            row('shortcutRowBath', BATH_HOTKEY_HINT),
+            row('shortcutRowKiss', KISS_HOTKEY_HINT),
             row('shortcutRowDisplay', DISPLAY_HOTKEY_HINTS.join(' · ')),
           ],
         }),

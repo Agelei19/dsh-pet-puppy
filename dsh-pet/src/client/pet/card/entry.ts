@@ -13,6 +13,7 @@ import {
   type EncodedImage,
 } from '../../../shared/chat/index.ts';
 import { captureDisplayFrame } from '../../../shared/chat/capture.ts';
+import { BATH_ANIMATION, KISS_ANIMATION, isBathHotkey, isKissHotkey } from '../../../shared/bath-hotkey.ts';
 import { displayOfHotkey } from '../../../shared/display-hotkey.ts';
 import { SLEEP_HOTKEY_HINT, isSleepHotkey } from '../../../shared/sleep-hotkey.ts';
 import { TODO_HOTKEY_HINT, isTodoHotkey } from '../../../shared/todo/hotkey.ts';
@@ -331,6 +332,17 @@ export function createCardEntry(rt: CardEntryRuntime) {
         if (isSleepHotkey(e)) {
           e.preventDefault();
           toggleSleepRef.current();
+          return;
+        }
+        // B / N 是单向点播：播完自动回待机，不需要状态机，直接走菜单那条同一路径。
+        if (isBathHotkey(e)) {
+          e.preventDefault();
+          runMenuAction({ label: BATH_ANIMATION, anim: BATH_ANIMATION });
+          return;
+        }
+        if (isKissHotkey(e)) {
+          e.preventDefault();
+          runMenuAction({ label: KISS_ANIMATION, anim: KISS_ANIMATION });
           return;
         }
         if (!isTodoHotkey(e)) return;

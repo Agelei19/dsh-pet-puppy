@@ -29,6 +29,7 @@ export * from './env-view.ts';
 export * from './bubble-hold.ts';
 export * from './display-hotkey.ts';
 export * from './sleep-hotkey.ts';
+export * from './bath-hotkey.ts';
 export * from './todo/index.ts';
 export * from './tooltip.ts';
 export * from './voice.ts';

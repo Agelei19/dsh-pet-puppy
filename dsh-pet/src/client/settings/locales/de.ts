@@ -40,6 +40,8 @@ export const de: Record<Key, string> = {
   shortcutRowPaste: 'Bild einfügen',
   shortcutRowTodo: 'Aufgaben',
   shortcutRowSleep: 'Schlafen / Aufwachen',
+  shortcutRowBath: 'Baden',
+  shortcutRowKiss: 'Kuss',
   shortcutRowDisplay: 'Anzeigeposition',
   shortcutRowSidebar: 'Seitenleisten-Chat öffnen',
   shortcutGroupPet: 'Pet-Tastenkürzel',

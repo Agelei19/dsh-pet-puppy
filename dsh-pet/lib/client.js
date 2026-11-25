@@ -155,6 +155,17 @@ const leaf = (anim) => ({
 	label: anim,
 	anim
 });
+/** 有悬停快捷键的动作 → 菜单右侧灰字（没登记的动作为 undefined，菜单不显示 hint）。
+ *  这里必须写字面量：本区域在文件靠前处执行，而 bath-hotkey 的常量在后面才初始化（TDZ）。 */
+const ACTION_HOTKEY_HINTS = {
+	"洗澡": "B 键",
+	"伸头亲一下": "N 键"
+};
+const leafWithHint = (anim) => ({
+	label: anim,
+	anim,
+	hint: ACTION_HOTKEY_HINTS[anim]
+});
 function buildMenuTree(animations) {
 	const groups = [];
 	const pools = [
@@ -171,7 +182,7 @@ function buildMenuTree(animations) {
 	const cats = (animations.categories ?? []).filter((c) => c.actions.length > 0);
 	for (const c of cats) groups.push({
 		label: c.id,
-		children: c.actions.map(leaf)
+		children: c.actions.map(leafWithHint)
 	});
 	const events = animations.events ?? {};
 	for (const key of Object.keys(events)) {
@@ -523,7 +534,7 @@ function mountContextMenu(opts) {
 //#endregion
 //#region src/shared/tooltip.ts
 const TOOLTIP_CLASS = "pet-tooltip";
-const HOTKEY_TIP = "L 对话 · M 按住说 · S 截图 · D 待办 · Z 睡醒";
+const HOTKEY_TIP = "L 对话 · M 按住说 · S 截图 · D 待办 · Z 睡醒 · B 洗澡";
 const TOOLTIP_GAP_RATIO = .022;
 function tooltipPlacement(cursor, tip, bounds, gap) {
 	const clamp$1 = (v, lo, hi) => hi < lo ? lo : Math.min(Math.max(v, lo), hi);
@@ -6664,6 +6675,19 @@ function isSleepHotkey(e) {
 }
 
 //#endregion
+//#region src/shared/bath-hotkey.ts
+const BATH_ANIMATION = "洗澡";
+const KISS_ANIMATION = "伸头亲一下";
+const BATH_HOTKEY_HINT = "B 键";
+const KISS_HOTKEY_HINT = "N 键";
+function isBathHotkey(e) {
+	return isBareKey(e, "b");
+}
+function isKissHotkey(e) {
+	return isBareKey(e, "n");
+}
+
+//#endregion
 //#region src/shared/todo/hotkey.ts
 const TODO_HOTKEY_HINT = "D 键";
 function isTodoHotkey(e) {
@@ -6918,6 +6942,8 @@ function makeShortcutsCard(rt, ctx) {
 						row("shortcutRowPaste", PASTE_KEYCAP),
 						row("shortcutRowTodo", TODO_HOTKEY_HINT),
 						row("shortcutRowSleep", SLEEP_HOTKEY_HINT),
+			row("shortcutRowBath", BATH_HOTKEY_HINT),
+			row("shortcutRowKiss", KISS_HOTKEY_HINT),
 						row("shortcutRowDisplay", DISPLAY_HOTKEY_HINTS.join(" · "))
 					]
 				}),
@@ -7307,6 +7333,8 @@ const de$1 = {
 	shortcutRowPaste: "Bild einfügen",
 	shortcutRowTodo: "Aufgaben",
 	shortcutRowSleep: "Schlafen / Aufwachen",
+	shortcutRowBath: "Baden",
+	shortcutRowKiss: "Kuss",
 	shortcutRowDisplay: "Anzeigeposition",
 	shortcutRowSidebar: "Seitenleisten-Chat öffnen",
 	shortcutGroupPet: "Pet-Tastenkürzel",
@@ -7557,6 +7585,8 @@ const en$1 = {
 	shortcutRowPaste: "Paste image",
 	shortcutRowTodo: "Todo list",
 	shortcutRowSleep: "Sleep / wake",
+	shortcutRowBath: "Take a bath",
+	shortcutRowKiss: "Lean out and kiss",
 	shortcutRowDisplay: "Display position",
 	shortcutRowSidebar: "Open sidebar chat",
 	shortcutGroupPet: "Pet shortcuts",
@@ -7807,6 +7837,8 @@ const es$1 = {
 	shortcutRowPaste: "Pegar imagen",
 	shortcutRowTodo: "Tareas",
 	shortcutRowSleep: "Dormir / despertar",
+	shortcutRowBath: "Baño",
+	shortcutRowKiss: "Besito",
 	shortcutRowDisplay: "Posición de visualización",
 	shortcutRowSidebar: "Abrir el chat lateral",
 	shortcutGroupPet: "Atajos de la mascota",
@@ -8057,6 +8089,8 @@ const fr$1 = {
 	shortcutRowPaste: "Coller une image",
 	shortcutRowTodo: "Tâches",
 	shortcutRowSleep: "Dormir / réveiller",
+	shortcutRowBath: "Bain",
+	shortcutRowKiss: "Bisou",
 	shortcutRowDisplay: "Position d’affichage",
 	shortcutRowSidebar: "Ouvrir le chat latéral",
 	shortcutGroupPet: "Raccourcis du compagnon",
@@ -8307,6 +8341,8 @@ const ja$1 = {
 	shortcutRowPaste: "画像を貼り付け",
 	shortcutRowTodo: "ToDo",
 	shortcutRowSleep: "寝る / 起きる",
+	shortcutRowBath: "お風呂",
+	shortcutRowKiss: "キス",
 	shortcutRowDisplay: "表示位置",
 	shortcutRowSidebar: "サイドバーの会話を開く",
 	shortcutGroupPet: "ペットのショートカット",
@@ -8557,6 +8593,8 @@ const pt$1 = {
 	shortcutRowPaste: "Colar imagem",
 	shortcutRowTodo: "Tarefas",
 	shortcutRowSleep: "Dormir / acordar",
+	shortcutRowBath: "Banho",
+	shortcutRowKiss: "Beijinho",
 	shortcutRowDisplay: "Posição de exibição",
 	shortcutRowSidebar: "Abrir chat lateral",
 	shortcutGroupPet: "Atalhos do pet",
@@ -8807,6 +8845,8 @@ const ru$1 = {
 	shortcutRowPaste: "Вставить изображение",
 	shortcutRowTodo: "Задачи",
 	shortcutRowSleep: "Спать / проснуться",
+	shortcutRowBath: "Купание",
+	shortcutRowKiss: "Поцелуй",
 	shortcutRowDisplay: "Позиция показа",
 	shortcutRowSidebar: "Открыть чат в панели",
 	shortcutGroupPet: "Клавиши питомца",
@@ -9057,6 +9097,8 @@ const zh$1 = {
 	shortcutRowPaste: "粘贴图片",
 	shortcutRowTodo: "待办事项",
 	shortcutRowSleep: "睡觉 / 起来",
+	shortcutRowBath: "进浴缸洗澡",
+	shortcutRowKiss: "伸头亲一下",
 	shortcutRowDisplay: "显示位置",
 	shortcutRowSidebar: "打开侧栏对话",
 	shortcutGroupPet: "桌宠快捷键",
@@ -12912,6 +12954,22 @@ function createCardEntry(rt) {
 				if (isSleepHotkey(e)) {
 					e.preventDefault();
 					toggleSleepRef.current();
+					return;
+				}
+				if (isBathHotkey(e)) {
+					e.preventDefault();
+					runMenuAction({
+						label: BATH_ANIMATION,
+						anim: BATH_ANIMATION
+					});
+					return;
+				}
+				if (isKissHotkey(e)) {
+					e.preventDefault();
+					runMenuAction({
+						label: KISS_ANIMATION,
+						anim: KISS_ANIMATION
+					});
 					return;
 				}
 				if (!isTodoHotkey(e)) return;

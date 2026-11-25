@@ -6,6 +6,7 @@
  * @module dsh-pet/src/shared/menu/tree
  */
 import { DISPLAY_HOTKEY_HINTS, DISPLAY_ORDER } from '../display-hotkey.ts';
+import { BATH_ANIMATION, BATH_HOTKEY_HINT, KISS_ANIMATION, KISS_HOTKEY_HINT } from '../bath-hotkey.ts';
 import { type Animations, type Category, type PetDisplay } from '../types.ts';
 import type { MenuBranch, MenuLeaf, MenuMoreItem, MenuNode } from './types.ts';
 
@@ -106,6 +107,15 @@ const EVENT_LABELS: Record<string, string> = {
 /** 把动画名包成叶子。 */
 export const leaf = (anim: string): MenuLeaf => ({ label: anim, anim });
 
+/** 有悬停快捷键的动作 → 菜单右侧灰字（没登记的动作为 undefined，菜单不显示 hint）。 */
+const ACTION_HOTKEY_HINTS: Record<string, string> = {
+  [BATH_ANIMATION]: BATH_HOTKEY_HINT,
+  [KISS_ANIMATION]: KISS_HOTKEY_HINT,
+};
+
+/** 把动画名包成叶子，并按登记表带上快捷键提示。 */
+const leafWithHint = (anim: string): MenuLeaf => ({ label: anim, anim, hint: ACTION_HOTKEY_HINTS[anim] });
+
 /** 由成品 animations 配置推导菜单树：一级「动作」→ 二级分类 → 三级动画名；空池与空分类自动省略。 */
 export function buildMenuTree(animations: Animations): MenuNode[] {
   const groups: MenuNode[] = [];
@@ -122,7 +132,7 @@ export function buildMenuTree(animations: Animations): MenuNode[] {
   // 随机动作分类：noMirror 分类照样可点播，播放端朝右时强制朝左（见 isNoMirrorAnimation）
   const cats = (animations.categories ?? []).filter((c) => c.actions.length > 0);
   for (const c of cats) {
-    groups.push({ label: c.id, children: c.actions.map(leaf) });
+    groups.push({ label: c.id, children: c.actions.map(leafWithHint) });
   }
   // 事件动画：每个事件一个分类，不来自随机链；数组槽位展平为逐个叶子，候选都可点播预览。
   const events = animations.events ?? {};
