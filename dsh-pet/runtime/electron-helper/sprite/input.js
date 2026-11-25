@@ -136,9 +136,8 @@ Object.assign(PetSprite.prototype, {
     const edges = ['left', 'right', 'top', 'bottom'];
     const edge = edges.reduce((best, k) => (hide[k] > hide[best] ? k : best), 'right');
     if (hide[edge] < this.size * 0.5) return false;
-    // 素材名说的是「从哪条边探头」：贴左边要用「从右边探头」那支（狗在画面右半边、朝屏幕里看），
-    // 反之亦然。左右因此是交叉的，别按字面直配。
-    const animName = { bottom: '探头往下', left: '探头往右', right: '探头往左', top: '探头往上' }[edge];
+    // 素材名说的是「从哪条边探头」：往左＝身体贴在画面左边、朝屏幕里看，正好对应贴左边。
+    const animName = { bottom: '探头往下', left: '探头往左', right: '探头往右', top: '探头往上' }[edge];
     const pools = this.animations || {};
     const known = Object.keys(pools).some(
       (k) => Array.isArray(pools[k]) && pools[k].includes(animName),
@@ -152,6 +151,9 @@ Object.assign(PetSprite.prototype, {
     else y = H - DOCK_VISIBLE_H;
     this.dockedTo = { back: { x: px, y: py }, edge };
     this.sendBounds(x, y);
+    // 探头素材自带朝向（往左＝贴在画面左边探头），再叠加朝右镜像就会左右颠倒：
+    // 所以贴边前先把朝向复位，保证四面都是素材的原方向。
+    this.facing = 'left';
     this.switchTo(animName, false);
     return true;
   },
