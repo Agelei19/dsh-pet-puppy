@@ -15,11 +15,12 @@ import type * as ReactNS from 'react';
 export type DockEdge = 'left' | 'right' | 'top' | 'bottom';
 
 /** 各边贴边后的动作：上下用「扒着窗沿」的专门素材；左右没有专门素材时退回待机，
- *  只露出半边身子，读起来就是「从门边探出半个脑袋」。 */
+ *  只露出半边身子，读起来就是「从门边探出半个脑袋」。
+ *  注意素材名说的是「从哪条边探头」，所以左右是交叉的：贴左边用「探头往右」那支。 */
 const EDGE_ANIM: Record<DockEdge, string> = {
   bottom: '探头往下',
-  left: '探头往左',
-  right: '探头往右',
+  left: '探头往右',
+  right: '探头往左',
   top: '探头往上',
 };
 

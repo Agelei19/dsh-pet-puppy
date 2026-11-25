@@ -136,7 +136,9 @@ Object.assign(PetSprite.prototype, {
     const edges = ['left', 'right', 'top', 'bottom'];
     const edge = edges.reduce((best, k) => (hide[k] > hide[best] ? k : best), 'right');
     if (hide[edge] < this.size * 0.5) return false;
-    const animName = { bottom: '探头往下', left: '探头往左', right: '探头往右', top: '探头往上' }[edge];
+    // 素材名说的是「从哪条边探头」：贴左边要用「从右边探头」那支（狗在画面右半边、朝屏幕里看），
+    // 反之亦然。左右因此是交叉的，别按字面直配。
+    const animName = { bottom: '探头往下', left: '探头往右', right: '探头往左', top: '探头往上' }[edge];
     const pools = this.animations || {};
     const known = Object.keys(pools).some(
       (k) => Array.isArray(pools[k]) && pools[k].includes(animName),
